@@ -11,11 +11,17 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-add_executable(talker src/publisher_member_function.cpp)
-ament_target_dependencies(talker rclcpp std_msgs sensor_msgs)
+add_executable(station src/weather_station.cpp)
+ament_target_dependencies(station rclcpp std_msgs sensor_msgs)
 
-add_executable(listener src/subscriber_member_function.cpp)
+add_executable(listener src/weather_listener.cpp)
 ament_target_dependencies(listener rclcpp std_msgs sensor_msgs)
+
+install(TARGETS
+  station
+  listener
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
