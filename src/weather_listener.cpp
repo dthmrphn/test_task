@@ -5,9 +5,9 @@
 #include "sensor_msgs/msg/relative_humidity.hpp"
 #include "sensor_msgs/msg/temperature.hpp"
 
+#include "weather_adapter.h"
+
 using std::placeholders::_1;
-using Temperature = sensor_msgs::msg::Temperature;
-using RelHumidity = sensor_msgs::msg::RelativeHumidity;
 
 class WheatherSubscriber : public rclcpp::Node {
   public:
@@ -16,7 +16,7 @@ class WheatherSubscriber : public rclcpp::Node {
             "temperature", 10,
             std::bind(&WheatherSubscriber::temp_callback, this, _1));
         humidity_ = this->create_subscription<RelHumidity>(
-            "humidity", 10,
+            "relhumidity", 10,
             std::bind(&WheatherSubscriber::humi_callback, this, _1));
     }
 

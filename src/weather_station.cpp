@@ -9,22 +9,7 @@
 #include "sensor_msgs/msg/relative_humidity.hpp"
 #include "sensor_msgs/msg/temperature.hpp"
 
-using Temperature = sensor_msgs::msg::Temperature;
-using RelHumidity = sensor_msgs::msg::RelativeHumidity;
-
-template <typename T> T get_message(float value) {}
-
-template <> Temperature get_message<Temperature>(float value) {
-    Temperature rv;
-    rv.temperature = value;
-    return rv;
-}
-
-template <> RelHumidity get_message<RelHumidity>(float value) {
-    RelHumidity rv;
-    rv.variance = value;
-    return rv;
-}
+#include "weather_adapter.h"
 
 // function reading values from file
 static float read_value(std::fstream& f) {
@@ -48,7 +33,8 @@ template <typename T> class WeatherSensor : public rclcpp::Node {
         this->declare_parameter<int>(period.data(), period_);
 
         // creating publisher
-        publisher_ = this->create_publisher<T>(n, 10);
+        publisher_ =
+            this->create_publisher<rclcpp::TypeAdapter<float, T>>(n, 10);
 
         // registring timer callback
         timer_handle_ =
@@ -63,9 +49,8 @@ template <typename T> class WeatherSensor : public rclcpp::Node {
   private:
     // timer callback sends measured data to subscriber
     void timer_cb() {
-        auto value = read_value(f_);
-        T message = get_message<T>(value);
-        RCLCPP_INFO(this->get_logger(), "v: '%f'", value);
+        auto message = read_value(f_);
+        RCLCPP_INFO(this->get_logger(), "v: '%f'", message);
         publisher_->publish(message);
     }
 
@@ -98,7 +83,8 @@ template <typename T> class WeatherSensor : public rclcpp::Node {
   private:
     std::shared_ptr<rclcpp::TimerBase> timer_handle_;
     std::shared_ptr<OnSetParametersCallbackHandle> param_handle_;
-    std::shared_ptr<rclcpp::Publisher<T>> publisher_;
+    std::shared_ptr<rclcpp::Publisher<rclcpp::TypeAdapter<float, T>>>
+        publisher_;
 
     static constexpr std::string_view source = "source";
     static constexpr std::string_view period = "period";
@@ -110,13 +96,15 @@ template <typename T> class WeatherSensor : public rclcpp::Node {
 int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);
 
+    std::string home = getenv("HOME");
     rclcpp::executors::SingleThreadedExecutor exec;
 
     auto temp = std::make_shared<WeatherSensor<Temperature>>(
         "temperature",
-        "/home/deth/ros2_ws/src/test_task/measures/temperature.txt");
+        home + "/ros2_ws/src/test_task/measures/temperature.txt");
     auto humy = std::make_shared<WeatherSensor<RelHumidity>>(
-        "humidity", "/home/deth/ros2_ws/src/test_task/measures/humidity.txt");
+        "relhumidity",
+        home + "/ros2_ws/src/test_task/measures/relhumidity.txt");
 
     exec.add_node(temp);
     exec.add_node(humy);
