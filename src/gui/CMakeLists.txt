@@ -2,8 +2,14 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+list(REMOVE_DUPLICATES QML_IMPORT_PATH)
+set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
+    CACHE STRING "extra qml import paths"
+    FORCE
+)
+
 add_executable(stationgui 
-    qml/main.qml 
+    qml/qml.qrc 
     main.cpp
     weather_node.cpp
 )
@@ -23,8 +29,3 @@ install(TARGETS
     stationgui
     DESTINATION lib/${PROJECT_NAME}
 )
-
-# install(FILES
-#     qml/main.qml
-#     DESTINATION lib/${PROJECT_NAME}
-# )

@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
 #endif
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    qmlRegisterType<QRosNode>("backend", 1, 0, "Backend");
-    const QUrl url(QStringLiteral("main.qml"));
+    qmlRegisterType<QRosNode>("QRosNode", 1, 0, "QRosNode");
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject* obj, const QUrl& objUrl) {
@@ -20,17 +20,6 @@ int main(int argc, char* argv[]) {
         },
         Qt::QueuedConnection);
     engine.load(url);
-
-    // QGuiApplication app(argc, argv);
-    // QQuickView view;
-    // view.setSource(QUrl(":/qml/mail.qml"));
-    // if (view.errors().isEmpty() == false) {
-    //     return -1;
-    // }
-
-    // QRosNode node(nullptr, argc, argv);
-    // view.rootContext()->setContextProperty("backend", &node);
-    // view.show();
 
     return app.exec();
 }

@@ -1,29 +1,28 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 
-import backend 1.0
+import QRosNode 1.0
 
 Window {
-    width: 800
+    width: 650
     height: 480
     visible: true
     color: "#222222"
     title: qsTr("Weather Station")
 
-    Backend {
+    QRosNode {
         id: backend
     }
 
     Grid {
         id: grid
-        width: 600
-        height: 600
-        spacing: 150
+        spacing: 40
 
         SensorBar {
             id: sensorTemp
-            progresNameValue: "Temperature"
+            progresNameValue: "Temperature, °C"
             progressColor: "#f4201d"
+            maxValue: 30
         }
 
         SensorBar {

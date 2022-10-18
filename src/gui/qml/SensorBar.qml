@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
-//import QtGraphicalEffects 1.15
+import QtGraphicalEffects 1.15
 
 Item {
     id: progress
@@ -16,7 +16,9 @@ Item {
 
     property bool roundCap: true
     property int strokeWidth: 15
-    property int startAngle: -90
+    property int startAngle: -210
+    property int sweepAngle: 240
+
     property color bgColor: "#00000000"
     property color bgStrokeColor: "#b0cfde"
     property color progressColor: "#55ffff"
@@ -25,8 +27,10 @@ Item {
     property string textValue: ""
     property bool textShowValue: true
     property string textFont: "Segoe UI"
-    property color textColor: "#22ff11"
+    property color textColor: "#3A8BC3"
     property int textSize: 45
+
+    property int lastValue: 0
 
     property int decimal: 1
 
@@ -35,6 +39,7 @@ Item {
         anchors.fill: parent
         layer.enabled:  true
         layer.samples: progress.samples
+        antialiasing: true
 
         ShapePath {
             id: pathBG
@@ -49,7 +54,7 @@ Item {
                 centerX: progress.width / 2
                 centerY: progress.height / 2
                 startAngle: progress.startAngle
-                sweepAngle: 360
+                sweepAngle: progress.sweepAngle
             }
         }
 
@@ -66,7 +71,10 @@ Item {
                 centerX: progress.width / 2
                 centerY: progress.height / 2
                 startAngle: progress.startAngle
-                sweepAngle: (360 / progress.maxValue) * progress.value
+                sweepAngle: (progress.sweepAngle / progress.maxValue) * progress.value
+
+                NumberAnimation on sweepAngle {to: progress.value} 
+                Behavior on sweepAngle { NumberAnimation {} }
             }
         }
 
