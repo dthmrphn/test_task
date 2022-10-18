@@ -31,12 +31,12 @@ template <> struct rclcpp::TypeAdapter<float, RelHumidity> {
 
     static void convert_to_ros_message(const custom_type& src,
                                        ros_message_type& dst) {
-        dst.variance = src;
+        dst.relative_humidity = src;
     }
 
     static void convert_to_custom(const ros_message_type& src,
                                   custom_type& dst) {
-        dst = src.variance;
+        dst = src.relative_humidity;
     }
 };
 

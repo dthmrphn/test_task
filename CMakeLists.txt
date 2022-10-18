@@ -5,23 +5,17 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+include_directories(include)
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 
-add_executable(station src/weather_station.cpp)
-ament_target_dependencies(station rclcpp std_msgs sensor_msgs)
-
-add_executable(listener src/weather_listener.cpp)
-ament_target_dependencies(listener rclcpp std_msgs sensor_msgs)
-
-install(TARGETS
-  station
-  listener
-  DESTINATION lib/${PROJECT_NAME}
-)
+add_subdirectory(src/gui)
+add_subdirectory(src/station)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
