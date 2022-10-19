@@ -10,11 +10,11 @@ Item {
     property string progresNameValue: ""
 
     property real maxValue: 100
-    property real value: 1
+    property real value: 0
 
     property int samples: 12
 
-    property bool roundCap: true
+    property bool roundCap: false
     property int strokeWidth: 15
     property int startAngle: -210
     property int sweepAngle: 240
@@ -30,8 +30,6 @@ Item {
     property color textColor: "#3A8BC3"
     property int textSize: 45
 
-    property int lastValue: 0
-
     property int decimal: 1
 
     Shape {
@@ -45,7 +43,7 @@ Item {
             id: pathBG
             strokeColor: progress.bgStrokeColor
             fillColor: progress.bgColor
-            strokeWidth:  progress.strokeWidth / 4
+            strokeWidth:  progress.strokeWidth / 6
             capStyle: progress.roundCap ? ShapePath.RoundCap : ShapePath.FlatCap
 
             PathAngleArc {
@@ -62,7 +60,7 @@ Item {
             id: path
             strokeColor: progress.progressColor
             fillColor: progress.bgColor
-            strokeWidth:  progress.strokeWidth
+            strokeWidth:  progress.strokeWidth / 3
             capStyle: progress.roundCap ? ShapePath.RoundCap : ShapePath.FlatCap
 
             PathAngleArc {
@@ -75,6 +73,26 @@ Item {
 
                 NumberAnimation on sweepAngle {to: progress.value} 
                 Behavior on sweepAngle { NumberAnimation {} }
+            }
+        }
+
+        ShapePath {
+            id: round
+            strokeColor: path.strokeColor
+            fillColor: progress.bgColor
+            strokeWidth:  progress.strokeWidth
+            capStyle: ShapePath.RoundCap
+
+            PathAngleArc {
+                radiusX: (progress.width / 2) - (progress.progressWidth / 2)
+                radiusY: (progress.height / 2) - (progress.progressWidth / 2)
+                centerX: progress.width / 2
+                centerY: progress.height / 2
+                startAngle: progress.startAngle + (progress.sweepAngle / progress.maxValue) * progress.value
+                sweepAngle: strokeWidth / 10
+
+                NumberAnimation on startAngle {to: progress.value} 
+                Behavior on startAngle { NumberAnimation {} }
             }
         }
 
